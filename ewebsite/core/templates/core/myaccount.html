@@ -1,0 +1,105 @@
+{% extends 'core/base.html' %}
+{% block title %}Account{% endblock %}
+{% block content %}
+<div class="max-w-6xl mx-auto p-6">
+    <h1 class="mb-5 text-3xl">My Account</h1>
+    <div class="mb-6">
+        <strong>Name: </strong>{{ request.user.get_full_name}} <br>
+        <strong>Email: </strong>{{ request.user.email }}
+    </div>
+    <hr>
+    <h2 class="my-6 text-xl">My Orders</h2>
+    {% for order in request.user.orders.all %}
+        <div class="w-full mb-6 p-6 flex flex-wrap bg-gray-100 rounded-xl">
+            <div class="mb-6 flex justify-between">
+                <a href="#">Order id: {{ order.order_id }}</a>
+            </div>
+            <div class="mb-6 w-full">
+                {% for item in order.items.all %}
+                    <div class="product mb-6 flex pr-6">
+
+                        <a href="#" class="w-1/4">
+                            <img class = "hover:shadow-lg rounded-xl" src="{{ item.fk_product.get_thumbnail }}" alt="">
+                        </a>
+                        <div class="w-3/4 pl-6">
+                            <div class="flex justify-between">
+                                <a href="#" class="text-lg">{{ item.fk_product.product_name }}</a>
+                                <p class="mb-6 pt-1 text-gray-500">$ {{ item.get_total_price }}</p>
+                            </div>
+                            <hr>
+                            <div class="mt-6">Quantity: {{ item.quantity }}</div>
+                            <form action="." method="post" class="space-y-3">
+                                {% csrf_token %}
+                                <div class="flex space-x-2">
+                                <div class="w-1/2">
+                                    <label>Review</label>
+                                    <input type="text" name = "reviewText" class="w-full mt-2 py-4 px-6 bg-white rounded-xl">
+                                </div>
+                                <div class="w-1/2">
+                                    <label>Stars</label>
+                                    <input type = "range" min = "1" max = "5" name = "stars" class="w-full mt-2 py-4 px-6 bg-white rounded-xl" oninput= "num.value = this.value">
+                                    <output id="num">0</output>
+                                </div>
+                            </div>
+                                {% if form.errors %} 
+                                    {% for field in form %} 
+                                        {% for error in field.errors %}
+                                            <div class="p-6 bg-red-200 text-red-800 rounded-xl">
+                                                <p>{{error|escape}}</p>
+                                            </div>
+                                        {% endfor %} 
+                                    {% endfor %} 
+                                    {% for error in form.non_field_errors %}
+                                        <div class="p-6 bg-red-200 text-red-800 rounded-xl">
+                                            <p>{{error|escape}}</p>
+                                        </div>
+                                    {% endfor %} 
+                                {% endif %}
+                                <div>                
+                                    <button class="py-2 px-2 rounded-xl text-white bg-purple-500 hover:bg-purple-700">Submit</button>
+                                </div>
+                            </form>
+                            <!-- <a href="{% url 'review' %}?product={{product.slug}}" class="mt-6 inline-block px-4 py-2 rounded-xl bg-purple-500 text-white hover:bg-purple-700">Write a review</a> -->
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+
+            <div>
+                <p class="text-lg">Date: {{ order.order_date }}</p>
+                <p class="text-lg">Total: $ {{ order.total }} </p>
+            </div>
+        </div>
+    {% endfor %}
+    <hr>
+    <h2 class="my-6 text-xl">My Returns</h2>
+    {% for return in request.user.returns.all %}
+        <div class="w-full mb-6 p-6 flex flex-wrap bg-gray-100 rounded-xl">
+            <div class="mb-6 flex justify-between">
+                <a href="#">Return id: {{ return.return_id }}</a>
+            </div>
+            <div class="mb-6 w-full">
+                {% for i in request.user.orderdetails.all %}
+                <p>{{ i.details.all  }}</p>
+                {% for item in i.details.all %}
+                        <div class="product mb-6 flex pr-6">
+
+                            <a href="#" class="w-1/4">
+                                <img class = "hover:shadow-lg rounded-xl" src="{{ item.fk_product.get_thumbnail }}" alt="">
+                            </a>
+                            <div class="w-3/4 pl-6">
+                                <div class="flex justify-between">
+                                    <a href="#" class="text-lg">{{ item.fk_product.product_name }}</a>
+                                    <p class="mb-6 pt-1 text-gray-500">$ {{ item.get_total_price }}</p>
+                                </div>
+                                <hr>
+                                <div class="mt-6">Quantity: {{ item.quantity }}</div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'core/base.html' %}
+{% block title %}Add Product{% endblock %}
+{% block content %}
+<div class="max-w-lg mx-auto flex flex-wrap p-6">
+    <div class="w-full bg-gray-100 p-6 rounded-xl">
+        <h1 class="mb-6 text-xl">
+            Add Product
+        </h1>
+        <form action="." method="post" enctype="multipart/form-data" class="space-y-3">
+            {% csrf_token %}
+            
+            <div>
+                <label>Product Name</label>
+                <input type="text" name = "product_name" class="w-full mt-2 py-4 px-6 bg-white rounded-xl">
+            </div>
+            <div>
+                <label>Description</label>
+                <input type = "text" name = "description" class="w-full mt-2 py-4 px-6 bg-white rounded-xl">
+            </div>
+            <div>
+                <label>Quantity</label>
+                <input type = "numeric" name = "quantity" class="w-full mt-2 py-4 px-6 bg-white rounded-xl">
+            </div>
+            <div>
+                <label>Price</label>
+                <input type = "numeric" name = "price" class="w-full mt-2 py-4 px-6 bg-white rounded-xl">
+            </div>
+            <div>
+                <label>Brand Name</label>
+                <input type = "text" name = "brand_name" class="w-full mt-2 py-4 px-6 bg-white rounded-xl">
+            </div>
+            {% if form.errors %} 
+                {% for field in form %} 
+                    {% for error in field.errors %}
+                        <div class="p-6 bg-red-200 text-red-800 rounded-xl">
+                            <p>{{error|escape}}</p>
+                        </div>
+                    {% endfor %} 
+                {% endfor %} 
+                {% for error in form.non_field_errors %}
+                    <div class="p-6 bg-red-200 text-red-800 rounded-xl">
+                        <p>{{error|escape}}</p>
+                    </div>
+                {% endfor %} 
+            {% endif %}
+            <div>                
+                <button class="py-4 px-6 rounded-xl text-white bg-purple-500 hover:bg-purple-700">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
